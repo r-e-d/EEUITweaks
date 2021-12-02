@@ -1178,6 +1178,7 @@ END
  * Joined Store Panels Using lefreut's Solution
  *****************************************************************************/
 BEGIN @400000 DESIGNATED 4000
+DEPRECATED @400000
 GROUP @4
 REQUIRE_PREDICATE (
 	(FILE_EXISTS_IN_GAME ~UI.MENU~) AND                 // IE 2.0+
