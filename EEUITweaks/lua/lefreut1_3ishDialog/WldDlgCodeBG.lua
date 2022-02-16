@@ -46,21 +46,21 @@ end
 function dragDialogMessagesY(newY)
 	local x,y,w,hOld = Infinity_GetArea("worldDialogBackground")
 	h = hOld - newY
-	if h < 100 then
-		newY = hOld - 100
-	elseif h > 500 then
-		newY = hOld - 500
+	if h < 210 then
+		newY = hOld - 210
+	elseif h > 700 then
+		newY = hOld - 700
 	end
 
 	adjustItemGroup({"dialogHandleY","worldDialogPortraitArea"},0,newY,0,0)
-	adjustItemGroup({"worldDialogBackground","worldPlayerDialogChoicesList"},0,newY,0,-newY)
+	adjustItemGroup({"worldDialogBackground","worldPlayerDialogChoicesList","worldPlayerDialogFake"},0,newY,0,-newY)
 end
 
 function getDialogEntryText(row)
-	local text = worldPlayerDialogChoices[row - 2].text
+	local text = worldPlayerDialogChoices[row].text
 	if (row == worldPlayerDialogSelection) then
 		--Color the text white when selected
-		text = string.gsub(text, "%^0xff212eff", "^0xFFFFFFFF")
+		text = string.gsub(text, "%^0xff212eff", "^0xffffffff")
 	end
 	return text
 end
@@ -97,12 +97,49 @@ function getDialogText(row)
 	return trim(row == 1 and worldMessageBoxText:sub(1, idx1) or worldMessageBoxText:sub(idx1 + 1))
 end
 
-function makeDialogTable()
-	local length = step == 1 and 1 or #worldPlayerDialogChoices + 3
+function B3Split(inputstr, sep)
+	sep = sep or "%s"
 	local t = {}
-	for i=1,length do
-		table.insert(t, 1, '')
+	for field, s in string.gmatch(inputstr, "([^"..sep.."]*)("..sep.."?)") do
+		table.insert(t, field)
+		if s == "" then
+			return t
+		end
 	end
-	return t
+end
+
+B3DialogTable = {}
+B3DialogTextI = -1
+B3DialogResponsesStart = -1
+B3DialogResponsesEnd = -1
+
+function makeDialogTable()
+	B3DialogTable = B3Split(getDialogText(1), "\n")
+	B3DialogTextI = #B3DialogTable + 1
+	B3DialogResponsesStart = B3DialogTextI + 1
+	B3DialogResponsesEnd = B3DialogResponsesStart + #worldPlayerDialogChoices - 1
+	if step == 2 then
+		table.insert(B3DialogTable, getDialogText(2))
+		for _, v in pairs(worldPlayerDialogChoices) do
+			table.insert(B3DialogTable, v.text)
+		end
+		local paddingText = getDialogPaddingText()
+		table.insert(B3DialogTable, paddingText)
+	end
+	return B3DialogTable
+end
+
+function getDialogPortrait()
+	if worldNPCDialogPortrait == nil or worldNPCDialogPortrait == 'NONE' then
+		return 'NOPORTLS'
+	end
+	if worldNPCDialogPortrait:sub(-1) == 'S' then
+		for _, entry in ipairs(Infinity_GetFilesOfType("BMP")) do
+			if entry[1] == worldNPCDialogPortrait:sub(1, -2) .. 'M' then
+				return entry[1]
+			end
+		end
+	end
+	return worldNPCDialogPortrait
 end
 `

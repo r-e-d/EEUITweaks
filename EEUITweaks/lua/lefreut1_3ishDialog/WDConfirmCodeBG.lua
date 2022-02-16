@@ -9,7 +9,7 @@ end
 
 function getDialogButtonClickable()
 	if(gameOptions.m_bConfirmDialog == true) then
-		return (#worldPlayerDialogChoices == 0) or (worldPlayerDialogSelection and worldPlayerDialogSelection > 2) --no choices, or we've selected a choice.
+		return (#worldPlayerDialogChoices == 0) or (worldPlayerDialogSelection > 0 and worldPlayerDialogSelection <= #worldPlayerDialogChoices) --no choices, or we've selected a choice.
 	else
 		return true
 	end

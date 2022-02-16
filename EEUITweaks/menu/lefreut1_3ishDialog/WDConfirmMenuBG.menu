@@ -14,9 +14,9 @@ menu
 		text style "button"
 		action
 		"
-			if(gameOptions.m_bConfirmDialog == true and (#worldPlayerDialogChoices > 0)) then
+			if(gameOptions.m_bConfirmDialog == true and #worldPlayerDialogChoices > 0) then
 				-- if confirm dialog and choices available.
-				worldScreen:OnDialogReplyClick(worldPlayerDialogChoices[worldPlayerDialogSelection - 2].marker)
+				worldScreen:OnDialogReplyClick(worldPlayerDialogChoices[worldPlayerDialogSelection].marker)
 				worldPlayerDialogSelection = 0
 			else
 				-- no choices, just step.
