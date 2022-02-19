@@ -10,7 +10,7 @@
 DEFINE_ACTION_MACRO AdulQuickLoot.PatchRemoveMoveCode
 BEGIN
 	LOCAL_SPRINT tempstr ~~
-	LOCAL_SPRINT targetmatch ~Infinity_SetOffset[%TAB% ]*([%TAB% ]*%MQUOTE%WORLD_QUICKLOOT%MQUOTE%[%TAB% ]*,[%TAB% ]*0[%TAB% ]*,[%TAB% ]*-toolbarTop[%TAB% ]*)~
+	LOCAL_SPRINT targetmatch ~Infinity_SetOffset[%TAB% ]*([%TAB% ]*%MQUOTE%WORLD_QUICKLOOT%MQUOTE%[%TAB% ]*,.*)~
 	LOCAL_SET found = 0
 
 	// Get code block
@@ -36,7 +36,7 @@ BEGIN
 
 		ACTION_IF %found% THEN
 		BEGIN
-			// Put modified code block into $UIMenuIF("Body")			
+			// Put modified code block into $UIMenuIF("Body")
 			OUTER_SET found = SIZE_OF_FILE ~.../CounterInLine~
 			COPY - ~.../CounterInLine~ ~.../CounterInLine~
 			READ_ASCII 0 $UIMenuIF("Body") (%found%-1)
@@ -48,7 +48,7 @@ BEGIN
 			BEGIN
 				LOG ~In AdulQuickLoot.PatchRemoveMoveCode: UIMenuUpdateLuaBlock failed~
 			END
-		END ELSE		
+		END ELSE
 		BEGIN // Not found. Logically should never happen - but bugs happen
 			OUTER_SET $UIMenuIF("Succeeded") = 0
 			LOG ~In AdulQuickLoot.PatchRemoveMoveCode: Couldn't find match pattern in block selected by same pattern~
@@ -75,12 +75,21 @@ DEFINE_ACTION_MACRO AdulQuickLoot.PatchWorldActionBar
 BEGIN
 	LOCAL_SPRINT tempstr $UIMenuIF("Body")
 	LOCAL_SPRINT adder ~~
+	LOCAL_SET found = 0
+
+	ACTION_IF NOT(IsLeUI) THEN
+	BEGIN
+		OUTER_SPRINT name ~%PKGNAME%/menu/AdulQuickLoot/quicklootbutton1.menu~
+	END ELSE
+	BEGIN
+		OUTER_SPRINT name ~%PKGNAME%/menu/AdulQuickLoot/quicklootbutton2.menu~
+	END
 
 	// Read quicklootbutton.menu into adder
-	LOCAL_SET found = SIZE_OF_FILE ~%PKGNAME%/menu/AdulQuickLoot/quicklootbutton.menu~
-	COPY - ~%PKGNAME%/menu/AdulQuickLoot/quicklootbutton.menu~ ~.../CounterInLine~
+	OUTER_SET found = SIZE_OF_FILE ~%name%~
+	COPY - ~%name%~ ~.../CounterInLine~
 		READ_ASCII 0 adder (%found%)
-	OUTER_SET found = 0 
+	OUTER_SET found = 0
 
 	// Put current menubody into inline file
 	COPY - ~ToInlineTemplate~ ~.../CounterInLine~
@@ -97,11 +106,11 @@ BEGIN
 		~%adder%~
 
 	// Not found - give up
-	ACTION_IF NOT %found% THEN 
+	ACTION_IF NOT %found% THEN
 	BEGIN
 		LOG ~In AdulQuickLoot.PatchWorldActionBar - failed to find quick loot activate button~
 		OUTER_SET $UIMenuIF("Succeeded") = 0
-	END ELSE 
+	END ELSE
 
 	// Success - copy .../CounterInLine to $UIMenuIF("Body")
 	BEGIN

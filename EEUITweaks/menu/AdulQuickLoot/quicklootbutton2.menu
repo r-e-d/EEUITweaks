@@ -1,0 +1,44 @@
+-- BEGIN BETTER QUICK LOOT INIT 1.8
+button
+{
+	area 0 0 52 52
+	align center center
+	bam ROUNDBUT
+	toggle groundItemsButtonToggle
+	tooltip lua "Infinity_FetchString(engine_mode == 0 and 32217 or 99897)"
+	action
+	"
+		if(groundItemsButtonToggle == 1) then
+			worldScreen:StartGroundItems()
+			setQuickLootPosition(true)
+		else
+			worldScreen:StopGroundItems()
+		end
+	"
+	actionAlt
+	"
+		if(groundItemsButtonToggle == 1) then
+			worldScreen:StartGroundItems()
+			setQuickLootPosition(true)
+		else
+			worldScreen:StopGroundItems()
+		end
+	"
+}
+button
+{
+	area 21 12 0 0
+	on e
+	toggle groundItemsButtonToggle
+	action
+	"
+		Infinity_PlaySound('GAM_09')
+		if(groundItemsButtonToggle == 1) then
+			worldScreen:StartGroundItems()
+			setQuickLootPosition()
+		else
+			worldScreen:StopGroundItems()
+		end
+	"
+}
+-- END BETTER QUICK LOOT INIT

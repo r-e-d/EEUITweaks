@@ -520,9 +520,6 @@ BEGIN @203000 DESIGNATED 2030
 GROUP @2
 REQUIRE_PREDICATE (
 	(FILE_EXISTS_IN_GAME ~UI.MENU~) AND // IE 2.0+
-	(NOT(MOD_IS_INSTALLED ~LeUI.tp2~ ~0~)) AND       // Not Lefreut's UI
-	(NOT(MOD_IS_INSTALLED ~LeUI-BG1EE.tp2~ ~0~)) AND // Not Lefreut's UI (BG1EE skin)
-	(NOT(MOD_IS_INSTALLED ~LeUI-SoD.tp2~ ~0~)) AND   // Not Lefreut's UI (SoD skin)
 	(
 		(GAME_IS ~eet~) OR
 		(GAME_IS ~bg2ee~) OR 

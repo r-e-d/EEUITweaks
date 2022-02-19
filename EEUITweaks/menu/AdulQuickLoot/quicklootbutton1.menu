@@ -1,11 +1,11 @@
--- BEGIN BETTER QUICK LOOT INIT 1.7
+-- BEGIN BETTER QUICK LOOT INIT 1.8
 button
 {
 	area 21 12 32 32
 	bam ROUNDBUT
 	scaleToClip
 	toggle groundItemsButtonToggle
-	tooltip "Quick Loot"
+	tooltip lua "Infinity_FetchString(engine_mode == 0 and 32217 or 99897)"
 	action
 	"
 		if(groundItemsButtonToggle == 1) then
