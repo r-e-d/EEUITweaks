@@ -130,10 +130,7 @@ function makeDialogTable()
 end
 
 function getDialogPortrait()
-	if worldNPCDialogPortrait == nil or worldNPCDialogPortrait == 'NONE' then
-		return 'NOPORTLS'
-	end
-	if worldNPCDialogPortrait:sub(-1) == 'S' then
+	if worldNPCDialogPortrait ~= nil and worldNPCDialogPortrait:sub(-1) == 'S' then
 		for _, entry in ipairs(Infinity_GetFilesOfType("BMP")) do
 			if entry[1] == worldNPCDialogPortrait:sub(1, -2) .. 'M' then
 				return entry[1]
