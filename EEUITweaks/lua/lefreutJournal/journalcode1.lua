@@ -1,7 +1,30 @@
 `
+function reinitQuests()
+	for questIdx, quest in pairs(quests) do
+		local noquest = true
+		for objIdx,objective in pairs(quest.objectives) do
+			local noobjective = true
+			for entryIdx,entry in pairs(objective.entries) do
+				if quests[questIdx].objectives[objIdx].entries[entryIdx].stateType ~= const.ENTRY_TYPE_NONE and quests[questIdx].objectives[objIdx].entries[entryIdx].stateType ~= nil then
+					noobjective = false
+				end
+			end
+			if noobjective then
+				quests[questIdx].objectives[objIdx].stateType = const.ENTRY_TYPE_NONE
+			end
+			if quests[questIdx].objectives[objIdx].stateType ~= const.ENTRY_TYPE_NONE and quests[questIdx].objectives[objIdx].stateType ~= nil then
+				noquest = false
+			end
+		end
+		if noquest then
+			quests[questIdx].stateType = const.ENTRY_TYPE_NONE
+		end
+	end
+end
 function initQuests()
 	--instead of always searching the quests, just map entry ids to their quests
 	entryToQuest = {}
+	buildQuestsTable()
 	for questIdx, quest in pairs(quests) do
 		quests[questIdx].stateType = const.ENTRY_TYPE_NONE
 		for objIdx,objective in pairs(quest.objectives) do
@@ -118,8 +141,13 @@ function updateJournalEntry(journalId, recvTime, stateType, chapter, timeStamp)
 	--NOTE this can be placed in a loop if there needs to be more than quest to an entry
 	--this would just mean entryToQuest returns a table that we iterate over
 	local questId = entryToQuest[journalId]
-	if questId == nil then
+	if questId == nil or stateType == const.ENTRY_TYPE_INFO then
 		--add loose entries into the looseEntries table so they still get displayed.
+		for _,entry in pairs(looseEntries) do
+			if entry.text == journalId then
+				return
+			end
+		end
 		local entry = buildEntry(journalId, recvTime, stateType, chapter, timeStamp)
 		table.insert(looseEntries,entry)
 
@@ -189,12 +217,6 @@ function updateJournalEntry(journalId, recvTime, stateType, chapter, timeStamp)
 	end
 	--sort the objectives.
 	table.sort(quest.objectives,compareByRecvTime)
-
-	if stateType == const.ENTRY_TYPE_INFO then
-		--add loose entries into the looseEntries table so they still get displayed.
-		local entry = buildEntry(journalId, recvTime, stateType, chapter, timeStamp)
-		table.insert(looseEntries,entry)
-	end
 
 	--update display data
 	buildQuestDisplay()

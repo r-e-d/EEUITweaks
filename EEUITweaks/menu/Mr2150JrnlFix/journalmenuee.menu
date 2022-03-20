@@ -1,7 +1,30 @@
 `
+function reinitQuests()
+	for questIdx, quest in pairs(quests) do
+		local noquest = true
+		for objIdx,objective in pairs(quest.objectives) do
+			local noobjective = true
+			for entryIdx,entry in pairs(objective.entries) do
+				if quests[questIdx].objectives[objIdx].entries[entryIdx].stateType ~= const.ENTRY_TYPE_NONE and quests[questIdx].objectives[objIdx].entries[entryIdx].stateType ~= nil then
+					noobjective = false
+				end
+			end
+			if noobjective then
+				quests[questIdx].objectives[objIdx].stateType = const.ENTRY_TYPE_NONE
+			end
+			if quests[questIdx].objectives[objIdx].stateType ~= const.ENTRY_TYPE_NONE and quests[questIdx].objectives[objIdx].stateType ~= nil then
+				noquest = false
+			end
+		end
+		if noquest then
+			quests[questIdx].stateType = const.ENTRY_TYPE_NONE
+		end
+	end
+end
 function initQuests()
 	--instead of always searching the quests, just map entry ids to their quests
 	entryToQuest = {}
+	buildQuestsTable()
 	for questIdx, quest in pairs(quests) do
 		quests[questIdx].stateType = const.ENTRY_TYPE_NONE
 		for objIdx,objective in pairs(quest.objectives) do
@@ -15,6 +38,8 @@ function initQuests()
 end
 
 function compareByRecvTime(o1,o2)
+	if(o1 == nil) then return false end
+	if(o2 == nil) then return true end
 	if(not o1.recvTime and not o2.recvTime) then return false end
 	if(not o1.recvTime) then return false end
 	if(not o2.recvTime) then return true end
@@ -49,8 +74,13 @@ function updateJournalEntry(journalId, recvTime, stateType, chapter, timeStamp)
 	--NOTE this can be placed in a loop if there needs to be more than quest to an entry
 	--this would just mean entryToQuest returns a table that we iterate over
 	local questId = entryToQuest[journalId]
-	if questId == nil then
+	if questId == nil or stateType == const.ENTRY_TYPE_INFO then
 		--add loose entries into the looseEntries table so they still get displayed.
+		for _,entry in pairs(looseEntries) do
+			if entry.text == journalId then
+				return
+			end
+		end
 		local entry = buildEntry(journalId, recvTime, stateType, chapter, timeStamp)
 		table.insert(looseEntries,entry)
 		
@@ -161,7 +191,7 @@ function buildQuestDisplay()
 					
 					--fix for missing data in bg1 and bg2.
 					--if we have an objective title unique from the quest, use it. otherwise use the timestamp from my first(only) entry.
-					if(objective.text == Infinity_FetchString(quest.text)) then
+					if(objective.text == Infinity_FetchString(quest.text) or objective.text == nil) then
 						objective.text = objective.entries[1].timeStamp
 					end
 					
