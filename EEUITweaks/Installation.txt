@@ -1,4 +1,4 @@
-EEUITweaks - Version 3.8
+EEUITweaks - Version 3.8.1
 
 This mod is configured as a WeiDU mod and consists of a setup program
 named setup-EEUITweaks.exe and a mod files directory named EEUITweaks.
