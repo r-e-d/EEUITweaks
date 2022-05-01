@@ -55,7 +55,7 @@ menu
 	}
 	button
 	{
-		area		246 110 54 54
+		area		247 110 54 54
 		bam		LUIPRTC
 		frame lua "getSpellHighlight(2)"
 		sequence	1
@@ -64,7 +64,7 @@ menu
 	}
 	button
 	{
-		area		328 110 54 54
+		area		326 110 54 54
 		bam		LUIPRTC
 		frame lua "getSpellHighlight(3)"
 		sequence	2
@@ -73,7 +73,7 @@ menu
 	}
 	button
 	{
-		area		403 110 54 54
+		area		405 110 54 54
 		bam		LUIPRTC
 		frame lua "getSpellHighlight(4)"
 		sequence	3
@@ -91,7 +91,7 @@ menu
 	}
 	button
 	{
-		area		566 110 54 54
+		area		563 110 54 54
 		bam		LUIPRTC
 		frame lua "getSpellHighlight(6)"
 		sequence	5
