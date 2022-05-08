@@ -205,7 +205,7 @@ function getTranslatedProficiency(row)
 	elseif (profRowDict[row] and chargen.proficiency[profRowDict[row]]) then
 		return chargen.proficiency[profRowDict[row]]
 	end
-	return {}
+	return {value = 0, max = 0}
 end
 
 function getProficiencyHelpText()
