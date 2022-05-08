@@ -12,20 +12,20 @@ menu
 	}
 	label
 	{
-		area 22 164 332 44
+		area 36 182 332 44
 		text "GENDER_TITLE"
 		text style "title"
 	}
 	label
 	{
-		area 414 184 286 404
+		area 430 177 290 422
 		text lua "Infinity_FetchString(createCharGenderHelp)"
 		text style "parchment"
-		text color D
+		text color B
 	}
 	button
 	{
-		area 78 354 98 86
+		area 84 354 98 86
 		bam GUIGEND1
 		sequence 0
 		toggle toggleMale
@@ -33,7 +33,7 @@ menu
 	}
 	button
 	{
-		area 200 354 98 86
+		area 230 354 98 86
 		bam GUIGEND1
 		sequence 1
 		toggle toggleFemale
@@ -43,7 +43,7 @@ menu
 	button
 	{
 		on escape
-		area 198 718 234 44
+		area 198 688 234 44
 		text "BACK_BUTTON"
 		text style "button"
 		bam GUIOSTUL
@@ -52,7 +52,7 @@ menu
 	button
 	{
 		on return
-		area 438 718 201 44
+		area 438 688 201 44
 		bam GUIOSTUM
 		text "DONE_BUTTON"
 		text style "button"
