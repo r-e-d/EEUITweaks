@@ -189,6 +189,7 @@ GROUP @1
 SUBCOMPONENT @510
 (
 	(NOT(MOD_IS_INSTALLED ~EEUITweaks.tp2~ ~1060~)) AND // Not Mr2150's Roll First
+	(NOT(MOD_IS_INSTALLED ~LeUI-BG1EE.tp2~ ~0~)) AND    // Not Lefreut's UI (BG1EE skin)
 	(
 		NOT(GAME_IS ~bgee iwdee~) OR
 		(FILE_EXISTS_IN_GAME ~BD0010.ARE~) OR
@@ -222,6 +223,7 @@ SUBCOMPONENT @510
 		(
 			(GAME_IS ~bgee~) AND 
 			(NOT(MOD_IS_INSTALLED ~LeUI.tp2~ ~0~)) AND             	// Not Lefreut's UI
+			(NOT(MOD_IS_INSTALLED ~LeUI-BG1EE.tp2~ ~0~)) AND        // Not Lefreut's UI (BG1EE skin)
 			(NOT(FILE_EXISTS ~override/ULGOTHST.MOS~)) AND         	// Not BG2onSoD
 			(NOT(FILE_EXISTS ~override/M_CKUI.LUA~)) AND           	// Not Revised Dragon Scale  
 			(NOT(MOD_IS_INSTALLED ~dragonspear_ui++.tp2~ ~1~)) AND 	// Not Dragonspear UI++
