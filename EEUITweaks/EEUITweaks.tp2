@@ -193,7 +193,8 @@ SUBCOMPONENT @510
 	(
 		NOT(GAME_IS ~bgee iwdee~) OR
 		(FILE_EXISTS_IN_GAME ~BD0010.ARE~) OR
-		(MOD_IS_INSTALLED ~LeUI.tp2~ ~0~)
+		(MOD_IS_INSTALLED ~LeUI.tp2~ ~0~)  OR
+		(MOD_IS_INSTALLED ~LeUI-SoD.tp2~ ~0~)
 	) // Not simple BGEE
 )
 

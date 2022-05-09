@@ -14,11 +14,13 @@ END
 LOG @158
 SILENT
 
+OUTER_SET LeUISoD = (MOD_IS_INSTALLED ~LeUI-SoD.tp2~ ~0~)
+
 OUTER_SPRINT $UIMenuIF("MenuName") ~CHARGEN_PORTRAIT~
 ACTION_MATCH 1
 WITH
-	%IsSoD%
-	BEGIN		
+	%IsSoD% %LeUISoD%
+	BEGIN
 		LOG @19
 		SILENT
 		ACTION_IF %mrportraitpickscaleui% = 1 THEN
@@ -31,7 +33,7 @@ WITH
 	END
 
 	%IsEETSoD%
-	BEGIN		
+	BEGIN
 		LOG @32
 		SILENT
 		ACTION_IF %mrportraitpickscaleui% = 1 THEN
@@ -44,7 +46,7 @@ WITH
 	END
 
 	%IsKRDS% %IsKRDS0% %IsKRDS1% %IsKRDS2% %IsKRDS3% %IsKRDS4% %IsKRDS5%
-	BEGIN		
+	BEGIN
 		LOG @38
 		SILENT
 		OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/Mr2150PortPicker/charportscaledsod.menu~
@@ -57,42 +59,42 @@ WITH
 		OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/Mr2150PortPicker/charportbg2.menu~
 	END
 
-	%IsBG2% 
+	%IsBG2%
 	BEGIN
 		LOG @28
 		SILENT
 		OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/Mr2150PortPicker/charportbg2.menu~
 	END
 
-	%IsEETBG2% 
+	%IsEETBG2%
 	BEGIN
 		LOG @31
 		SILENT
 		OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/Mr2150PortPicker/charportbg2.menu~
 	END
 
-	%IsLeUIBG2% 
+	%IsLeUIBG2%
 	BEGIN
 		LOG @34
 		SILENT
 		OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/Mr2150PortPicker/charportbg2.menu~
 	END
 
-	%IsLeUISOD% 
+	%IsLeUISOD%
 	BEGIN
 		LOG @35
 		SILENT
 		OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/Mr2150PortPicker/charportbg2.menu~
 	END
 
-	%IsLeUIBG1% 
+	%IsLeUIBG1%
 	BEGIN
 		LOG @36
 		SILENT
 		OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/Mr2150PortPicker/charportbg2.menu~
 	END
 
-	%IsEETLeUI% 
+	%IsEETLeUI%
 	BEGIN
 		LOG @37
 		SILENT
@@ -115,6 +117,19 @@ BEGIN
 	SILENT
 	OUTER_SPRINT $UIMenuIF("MenuName") ~CHARGEN_GENDER~
 	OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/BillyYankMultiPort/genderLeUI1.menu~
+	LAUNCH_ACTION_MACRO UIMenuReplaceMenu
+	ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+	BEGIN
+		FAIL @103002
+	END
+END
+
+ACTION_IF %LeUISoD% THEN
+BEGIN
+	LOG @103001
+	SILENT
+	OUTER_SPRINT $UIMenuIF("MenuName") ~CHARGEN_GENDER~
+	OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/BillyYankMultiPort/genderLeUI2.menu~
 	LAUNCH_ACTION_MACRO UIMenuReplaceMenu
 	ACTION_IF NOT $UIMenuIF("Succeeded") THEN
 	BEGIN
@@ -146,27 +161,27 @@ WITH
 	BEGIN
 		COPY ~%PKGNAME%/copy/Mr2150PortPicker/M_PPdeDE.lua~ ~override~
 	END
-	
+
 	~fr_FR~
 	BEGIN
 		COPY ~%PKGNAME%/copy/Mr2150PortPicker/M_PPfrFR.lua~ ~override~
 	END
-	
+
 	~it_IT~
 	BEGIN
 		COPY ~%PKGNAME%/copy/Mr2150PortPicker/M_PPitIT.lua~ ~override~
 	END
-	
+
 	~pl_PL~
 	BEGIN
 		COPY ~%PKGNAME%/copy/Mr2150PortPicker/M_PPplPL.lua~ ~override~
 	END
-	
+
 	~pt_BR~
 	BEGIN
 		COPY ~%PKGNAME%/copy/Mr2150PortPicker/M_PPptBR.lua~ ~override~
 	END
-	
+
 	DEFAULT
 		COPY ~%PKGNAME%/copy/Mr2150PortPicker/M_PPusEN.lua~ ~override~
 
@@ -181,6 +196,15 @@ WITH
 	BEGIN
 		COPY ~%PKGNAME%/copy/Mr2150PortPicker/M_nicks.lua~ ~override~
 		COPY ~%PKGNAME%/copy/Mr2150PortPicker/NOPORTMD.BMP~ ~override~
+	END
+
+	%LeUISoD%
+	BEGIN
+		COPY ~%PKGNAME%/copy/Mr2150PortPicker/M_nicks.lua~ ~override~
+		COPY ~%PKGNAME%/copy/Mr2150PortPicker/NOPORTMD.BMP~ ~override~
+		COPY ~%PKGNAME%/copy/Mr2150PortPicker/SOD/GUICGAPP.PNG~ ~override~
+		COPY ~%PKGNAME%/copy/Mr2150PortPicker/SOD/box4.PVRZ~ ~override~
+		COPY_EXISTING ~GUIOSTUL.BAM~ ~override/GUIBUTMT.BAM~
 	END
 
 	%IsBG2% %IsBG2onSoD% %IsEETBG2% %IsLeUIBG2% %IsEETLeUI%
@@ -220,18 +244,6 @@ WITH
 		BEGIN
 			FAIL @44
 		END
-		LAF EEUITweaks.CopyPVRZResource
-			STR_VAR
-				source_folder = EVAL ~%PKGNAME%/copy/BillyYankMultiPort/GENDER~
-				resource_file = ~GUIGDB.MOS~
-				pvrz_files = ~mos0130.PVRZ mos0131.PVRZ~
-			RET
-				$UIMenuIF("Succeeded") = succeeded
-		END
-		ACTION_IF NOT $UIMenuIF("Succeeded") THEN
-		BEGIN
-			FAIL @44
-		END
 	END
 
 	DEFAULT
@@ -242,6 +254,3 @@ END
 ACTION_IF (NOT FILE_EXISTS_IN_GAME ~M_BG.lua~) BEGIN
 	COPY ~%PKGNAME%/copy/Mr2150PortPicker/M_BG.lua~ ~override~
 END
-
-
-
