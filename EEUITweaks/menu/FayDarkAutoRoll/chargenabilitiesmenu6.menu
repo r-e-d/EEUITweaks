@@ -190,7 +190,6 @@ menu
 		actionUpdate
 		"
 			ticksStarting = ticksStarting + 1
-			if ticksStarting == 1 and (cellNumber == 4 or cellNumber == 5) then Infinity_PlaySound('GAM_09') end
 			if ticksStarting > 10 then
 				if cellNumber == 4 then
 					createCharScreen:OnAbilityPlusMinusButtonClick(currentChargenAbility, not reverseButtonPosition)

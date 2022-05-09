@@ -189,7 +189,6 @@ menu
 		"
 			currentChargenThiefSkill = nil
 			ticksStarting = ticksStarting + 1
-			if ticksStarting == 1 and (cellNumber == 7 or cellNumber == 8) and proficiencyEnabled(currentChargenProficiency) then Infinity_PlaySound('GAM_09') end
 			if ticksStarting > 10 then
 				local isClickable1 = chargenReverseButtons and minusButtonClickable or plusButtonClickable
 				local isClickable2 = chargenReverseButtons and plusButtonClickable or minusButtonClickable
@@ -278,7 +277,6 @@ menu
 			currentChargenProficiency = nil
 			if createCharScreen:IsThiefSkillPlusMinusButtonClickable() then
 				ticksStarting = ticksStarting + 1
-				if ticksStarting == 1 and (cellNumber == 3 or cellNumber == 4) then Infinity_PlaySound('GAM_09') end
 				if ticksStarting > 10 then
 					local plusCell = chargenReverseButtons and 4 or 3
 					local minusCell = chargenReverseButtons and 3 or 4
