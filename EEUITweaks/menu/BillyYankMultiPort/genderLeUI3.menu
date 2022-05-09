@@ -1,0 +1,77 @@
+menu
+{
+	name 'CHARGEN_GENDER'
+	align center center
+	ignoreesc
+	modal
+	onOpen
+	"
+		toggleMale = 0
+		toggleFemale = 0
+		createCharGenderHelp = 17236
+		Infinity_PlaySound('GAM_03')
+	"
+	onClose
+	"
+		Infinity_PlaySound('GAM_04')
+	"
+	
+	label
+	{
+		area 0 0 539 668
+		mosaic 'GUICGGEN'
+	}
+	label
+	{
+		area 8 18 522 44
+		text "GENDER_TITLE"
+		text style "title"
+	}
+	label
+	{
+		area 26 386 488 178
+		text lua "Infinity_FetchString(createCharGenderHelp)" 
+		text style "normal"
+		text color 'D'
+	}
+	button
+	{
+		area 74 140 190 168
+		bam GUIGEND1
+		sequence 0
+		scaleToClip
+		toggle toggleMale
+		action "toggleFemale = 0; createCharScreen:OnGenderSelectButtonClick(1)"
+	}
+	button
+	{
+		area 280 140 188 168
+		bam GUIGEND1
+		sequence 1
+		scaleToClip
+		toggle toggleFemale
+		action "toggleMale = 0; createCharScreen:OnGenderSelectButtonClick(2)"
+	}
+
+	button
+	{
+		on escape
+		area 70 596 202 44
+		text "BACK_BUTTON"
+		text style "button"
+		bam GUIBUTNT
+		sequenceonce lua "getRandomButtonSequence('GUIBUTNT')"
+		action "Infinity_PopMenu(); createCharScreen:OnCancelButtonClick()"
+	}
+	button
+	{
+		on return
+		area 286 596 204 44
+		bam GUIBUTNT
+		sequenceonce lua "getRandomButtonSequence('GUIBUTNT')"
+		text "DONE_BUTTON"
+		text style "button"
+		clickable lua "createCharScreen:IsDoneButtonClickable()"
+		action "Infinity_PopMenu(); createCharScreen:OnDoneButtonClick()"
+	}
+}
