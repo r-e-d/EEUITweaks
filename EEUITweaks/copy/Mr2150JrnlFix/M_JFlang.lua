@@ -48,6 +48,14 @@ function findLanguage()
 			JF_Notes = "Poznámky:",
 			JF_Edited = "Upravené:"
 		}
+	elseif currentlanguage == "ru_RU" then			-- Russian
+			JFStrings = {
+			JF_All = "Все",
+			JF_Active = "Активные",
+			JF_Completed = "Завершенные",
+			JF_Notes = "Мои заметки:",
+			JF_Edited = "Изменено:"
+		}
 	else											-- no matching language or language strings not set, so default to en_US for the extra strings
 		JFStrings = {
 			JF_All = "All",
