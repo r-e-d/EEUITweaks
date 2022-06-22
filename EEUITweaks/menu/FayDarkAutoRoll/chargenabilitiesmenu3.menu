@@ -36,7 +36,7 @@ end
 
 function StoreIfBest( )
 	local exceptionalStrength = 0
-	if ( storedTotalRoll == chargen.totalRoll ) then
+	if ( storedTotalRoll <= chargen.totalRoll ) then
 		exceptionalStrength = GetExceptionalStrength( )
 	end
 
