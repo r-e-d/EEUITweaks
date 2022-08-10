@@ -6,7 +6,10 @@ function specialistFrame(num)
 	return 0
 end
 function specialistOrSelectedFrame(num)
-	if chargen.choose_spell[rowNumber].enabled or chargen.choose_spell[rowNumber].known then
+	if chargen.choose_spell[rowNumber].known then
+		return 4
+	end
+	if chargen.choose_spell[rowNumber].enabled then
 		return 2
 	end
 	return specialistFrame(num)
