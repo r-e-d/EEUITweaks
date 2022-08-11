@@ -34,7 +34,7 @@ function dialogScroll(top, height, contentHeight)
 	if worldNPCDialogText == '' then
 		return nil
 	end
-	
+
 	if step == 1 then
 		step = 2
 		return -contentHeight
@@ -65,6 +65,14 @@ function getDialogEntryText(row)
 	return text
 end
 
+function clean(str)
+	-- remove extra space in front of innate abilities
+	str = str:gsub('(%^%-: %^0x%x%x%x%x%x%x%x%x) ', '%1')
+	-- remove empty name
+	str = str:gsub('%^0x%x%x%x%x%x%x%x%x %^%-: ', '')
+	return str
+end
+
 function getDialogText(row)
 	local idx1 = worldMessageBoxText:len()
 	local idx2 = worldNPCDialogText:len()
@@ -80,6 +88,9 @@ function getDialogText(row)
 			elseif c2 == 10 and worldNPCDialogText:byte(idx2 - 1) == c1 then
 				idx2 = idx2 - 1
 				c2 = worldNPCDialogText:byte(idx2)
+			elseif c2 == 10 and worldNPCDialogText:byte(idx2 - 1) == 10 and worldNPCDialogText:byte(idx2 - 2) == c1 then
+				idx2 = idx2 - 2
+				c2 = worldNPCDialogText:byte(idx2)
 			elseif c1 == 32 and c2 == 10 and worldMessageBoxText:byte(idx1 - 1) == 58 then
 				idx1 = idx1 - 1
 				c1 = 10
@@ -94,7 +105,7 @@ function getDialogText(row)
 		idx2 = idx2 - 1
 	end
 
-	return trim(row == 1 and worldMessageBoxText:sub(1, idx1) or worldMessageBoxText:sub(idx1 + 1))
+	return clean(trim(row == 1 and worldMessageBoxText:sub(1, idx1) or worldMessageBoxText:sub(idx1 + 1)))
 end
 
 function B3Split(inputstr, sep)
