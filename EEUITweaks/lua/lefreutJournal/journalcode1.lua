@@ -77,25 +77,23 @@ function createEntry(questId, objectiveId, entryId, previousObjectives, subGroup
 		table.insert(subGroups[subGroup],entry)
 	end
 	
-	--This code is different if we're sod or BG
 	local lineCount = 1
 	local fullStr = Infinity_FetchString(entryId)
 	for line in string.gmatch(fullStr, "[^\r\n]+") do
 		if(lineCount == 1) then
 			--objective text is first line.
 			objective.text = line
-		end
-		if(lineCount > 1) then
+		else
 			--entry text is everything after first
 			entry.text = entry.text .. line .. "\n"
 		end
 		lineCount = lineCount + 1
+		if(line:sub(-1) == ".") then break end
 	end
 	if(lineCount == 2) then
 		--it looks like sometimes entries are just an unbroken paragraph
 		--in this case the entry should get the paragraph and the objective gets nothing
-		--note lineCount == 2 is a bit misleading, there's only one line in this case.
-		entry.text = objective.text
+		entry.text = fullStr
 		objective.text = Infinity_FetchString(quest.text)
 	end
 	objective.entries = {entry}
