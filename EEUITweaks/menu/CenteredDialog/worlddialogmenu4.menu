@@ -4,16 +4,22 @@ menu
 	align center center
 	ignoreEsc
 	onOpen
-	"	
+	"
+		Infinity_PopMenu('ITEM_DESCRIPTION')
 		Infinity_PushMenu('WORLD_MESSAGES')
 		Infinity_PushMenu('WORLD_DIALOG_CONFIRM')
+		if(isTouchActionbar() and not dialogViewMode) then
+			Infinity_PushMenu('WORLD_DIALOG_LEFT')
+			Infinity_PushMenu('WORLD_DIALOG_RIGHT')
+		end
 		greySidebars()
 	"
 	onClose
 	"
-		
 		Infinity_PopMenu('WORLD_DIALOG_CONFIRM')
 		Infinity_PopMenu('WORLD_MESSAGES')
+		Infinity_PopMenu('WORLD_DIALOG_LEFT')
+		Infinity_PopMenu('WORLD_DIALOG_RIGHT')
 		ungreySidebars()
 	"
 	label
@@ -35,6 +41,46 @@ menu
 		text lua "worldNPCDialogText"
 		text style "gamelog"
 		scrollbar	'GUISCRC'
+	}
+	text
+	{
+		name "worldDialogMessageBox"
+		enabled "showWorldMessages"
+		area 20 -175 824 124
+		text lua "worldMessageBoxText"
+		text style "gamelog"
+		scrollbar	'GUISCRC'
+		scrollbar func "chatboxScroll"
+	}
+	handle
+	{
+		enabled "showWorldMessages"
+		name "dialogHandleY"
+		area 0 -47 863 32
+		actionDrag
+		"
+			dragDialogMessagesY(motionY)
+		"
+	}
+	text
+	{
+		enabled "showWorldMessages"
+		name "worldDialogShowMessagesButton"
+		area 764 -39 62 31
+		tooltip lua "t('LOG_HISTORY_TOOLTIP')"
+		bam "CHATHIST"
+		frame lua "showMessagesButtonFrame()"
+		action 
+		"
+			toggleDialogShowMessages()
+		"
+	}
+	text
+	{
+		name "worldDialogMessageDivider"
+		enabled "showWorldMessages"
+		area 33 -47 800 8
+		mosaic "DLGDIVI"
 	}
 	list
 	{
@@ -77,7 +123,7 @@ menu
 		action
 		"
 			--In confirm mode, just highlight the choice.
-			if(gameOptions.m_bConfirmDialog == true) then return end
+			if((gameOptions.m_bConfirmDialog == true) or (worldPlayerDialogSelection <= 0) or (worldPlayerDialogSelection > #worldPlayerDialogChoices)) then return end
 			worldScreen:OnDialogReplyClick(worldPlayerDialogChoices[worldPlayerDialogSelection].marker)
 			worldPlayerDialogSelection = 0
 		"

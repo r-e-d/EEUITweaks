@@ -57,7 +57,7 @@ DEFINE_ACTION_MACRO CenteredDialog.WorldDialogConfirmPatch2
 BEGIN
 	LOCAL_SPRINT tempstr $UIMenuIF("Body")
 	LOCAL_SET found = 0
-	LOCAL_SPRINT adder ~%TAB%offset 0 93%LE%%TAB%align center center%LE%~
+	LOCAL_SPRINT adder ~%TAB%offset 0 164%LE%%TAB%align center center%LE%~
 
 	// Put current menu definition into inline file
 	COPY - ~ToInlineTemplate~ ~.../CounterInLine~
@@ -102,7 +102,7 @@ END
 /*******************************************************************************
  * WorldDialogPatch1
  * 
- * Changes alignment and removes offset for LeUI WORLD_CONFIRM
+ * Changes alignment and removes offset for LeUI WORLD_DIALOG
  *
  * On completion $UIMenuIF("Succeeded") 1 => Success, 0 => Failure
  * 
