@@ -1,4 +1,4 @@
-EEUITweaks - Version 4.0.1
+EEUITweaks - Version 4.0.2
 
 This mod is configured as a WeiDU mod and consists of a setup program
 named setup-EEUITweaks.exe and a mod files directory named EEUITweaks.
