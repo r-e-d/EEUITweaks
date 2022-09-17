@@ -12,14 +12,6 @@ function magePageInfo()
 	return ""
 end
 
-mageBookStrings = {
-	SPWI908 = {tip = engine_mode == 0 and 24615 or 55373, title = 'CHAIN_CONTINGENCY_TITLE', action = "ADD_SPELLS_CONTINGENCY_LABEL"},
-	SPWI617 = {tip = engine_mode == 0 and 24615 or 55373, title = 'CONTINGENCY_TITLE', action = "ADD_SPELLS_CONTINGENCY_LABEL"},
-	SPWI809 = {tip = engine_mode == 0 and 24617 or 55372, title = 'SPELL_TRIGGER_TITLE', action = "ADD_SPELLS_TRIGGER_LABEL"},
-	SPWI710 = {tip = engine_mode == 0 and 24616 or 60420, title = 'SPELL_SEQUENCER_TITLE', action = "ADD_SPELLS_SEQUENCER_LABEL"},
-	SPWI420 = {tip = engine_mode == 0 and 24616 or 60420, title = 'MINOR_SEQUENCER_TITLE', action = "ADD_SPELLS_SEQUENCER_LABEL"},
-}
-
 contingencyDescription = 0
 
 function mageBookTitle()
