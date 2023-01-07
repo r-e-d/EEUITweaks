@@ -1,0 +1,88 @@
+//
+// ClickableDialog.PatchAction
+// Adds 'if(#worldPlayerDialogChoices == 0) then worldScreen:StepDialog() end' to action
+// On completion $UIMenuIF("Succeeded") 1 => Success, 0 => Failure
+//
+DEFINE_ACTION_MACRO ClickableDialog.PatchAction
+BEGIN
+	LOCAL_SPRINT tempstr $UIMenuIF("Body")
+	LOCAL_SPRINT adder ~if(#worldPlayerDialogChoices == 0) then worldScreen:StepDialog() end~
+	LOCAL_SET found = 0
+
+	// Put current menu definition into inline file
+	COPY - ~ToInlineTemplate~ ~.../CounterInLine~
+		REPLACE_EVALUATE ~dummy~ BEGIN END
+		~%tempstr%~
+
+	OUTER_SPRINT tempstr ~~
+
+	// Look for and patch onopen followed by double quoted code block
+	COPY - ~.../CounterInLine~ ~.../CounterInLine~
+		REPLACE_EVALUATE CASE_INSENSITIVE ~action%MWHITE%%MDQUOTE%\(%MNOTDQUOTE%*OnDialogReplyClick%MNOTDQUOTE%*\)%MDQUOTE%~ 
+		BEGIN
+			SPRINT tempstr ~action%LE%%TAB%%TAB%"%LE%%TAB%%TAB%%TAB%%adder%%MATCH1%"~
+			SET found = 1
+		END
+		~%tempstr%~
+
+	// Not found - give up
+	ACTION_IF NOT %found% THEN
+	BEGIN
+		LOG ~In ClickableDialog.PatchAction - failed to find modal line~
+		OUTER_SET $UIMenuIF("Succeeded") = 0
+	END ELSE 
+	// Success somewhere - copy .../CounterInLine to $UIMenuIF("Body")
+	BEGIN
+		OUTER_SPRINT $UIMenuIF("Body") ~~
+		OUTER_SET found = SIZE_OF_FILE ~.../CounterInLine~
+		COPY - ~.../CounterInLine~ ~.../CounterInLine~
+			READ_ASCII 0 $UIMenuIF("Body") (%found%-1)
+		OUTER_SET $UIMenuIF("Succeeded") = 1
+	END
+	COPY - ~EmptyInlineTemplate~ ~.../CounterInline~
+END
+
+/*******************************************************************************
+ * ClickableDialog
+ ******************************************************************************/
+// Open UI.MENU abstraction
+LOG @12
+SILENT
+LAUNCH_ACTION_MACRO UIMenuOpen
+ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+BEGIN
+	FAIL @20
+END
+
+// Patch WORLD_DIALOG
+LOG @205007
+SILENT
+
+OUTER_SPRINT $UIMenuIF("MenuName") ~WORLD_DIALOG~
+OUTER_SPRINT $UIMenuIF("Body") ~~
+LAUNCH_ACTION_MACRO UIMenuGetMenu
+ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+BEGIN
+	FAIL @205004
+END
+
+LAUNCH_ACTION_MACRO ClickableDialog.PatchAction
+ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+BEGIN
+	FAIL @205005
+END
+
+LAUNCH_ACTION_MACRO UIMenuUpdateMenu
+ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+BEGIN
+	FAIL @103
+END
+
+// All done - close up
+LOG @13
+SILENT
+LAUNCH_ACTION_MACRO UIMenuClose
+ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+BEGIN
+	FAIL @21
+END

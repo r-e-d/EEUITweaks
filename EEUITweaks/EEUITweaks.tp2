@@ -27,7 +27,7 @@ ALWAYS
 	END
 END
 
-VERSION ~4.0.2~
+VERSION ~4.0.3~
 
 LANGUAGE 
 	~English~ ~EEUITweaks/languages/english~ ~EEUITweaks/languages/english/setup.tra~
@@ -753,6 +753,24 @@ REQUIRE_PREDICATE (
 
 ACTION_TRY
 	INCLUDE ~%PKGNAME%/include/CLUAConsole.tpa~
+WITH 
+	DEFAULT
+		LAM UIMenuAbort
+		ACTION_RERAISE
+END
+
+/******************************************************************************
+ * Clickable dialog box
+ *****************************************************************************/
+BEGIN @213000 DESIGNATED 2130
+GROUP @2
+REQUIRE_PREDICATE (
+	(FILE_EXISTS_IN_GAME ~UI.MENU~) AND // IE 2.0+
+	(GAME_IS ~bgee bg2ee eet iwdee~)
+) @27
+
+ACTION_TRY
+	INCLUDE ~%PKGNAME%/include/ClickableDialog.tpa~
 WITH 
 	DEFAULT
 		LAM UIMenuAbort
