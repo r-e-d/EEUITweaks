@@ -6,7 +6,8 @@
 DEFINE_ACTION_MACRO ClickableDialog.PatchAction
 BEGIN
 	LOCAL_SPRINT tempstr $UIMenuIF("Body")
-	LOCAL_SPRINT adder ~if(#worldPlayerDialogChoices == 0) then worldScreen:StepDialog() end~
+	LOCAL_SPRINT adder1 ~action%LE%%TAB%%TAB%"%LE%%TAB%%TAB%%TAB%if(#worldPlayerDialogChoices == 0) then Infinity_PlaySound('GAM_09') worldScreen:StepDialog() end%LE%%TAB%%TAB%"~
+	LOCAL_SPRINT adder2 ~if(#worldPlayerDialogChoices == 0) then worldScreen:StepDialog() end~
 	LOCAL_SET found = 0
 
 	// Put current menu definition into inline file
@@ -16,14 +17,26 @@ BEGIN
 
 	OUTER_SPRINT tempstr ~~
 
-	// Look for and patch onopen followed by double quoted code block
+	// Look for the worldNPCDialog text box and add a clickable action
 	COPY - ~.../CounterInLine~ ~.../CounterInLine~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~action%MWHITE%%MDQUOTE%\(%MNOTDQUOTE%*OnDialogReplyClick%MNOTDQUOTE%*\)%MDQUOTE%~ 
+		REPLACE_EVALUATE CASE_INSENSITIVE ~text%MWHITE%{\(%MNOBRACE%*name %MDQUOTE%worldNPCDialog%MDQUOTE%%MNOBRACE%*\)}~ 
 		BEGIN
-			SPRINT tempstr ~action%LE%%TAB%%TAB%"%LE%%TAB%%TAB%%TAB%%adder%%MATCH1%"~
+			SPRINT tempstr ~text%LE%%TAB%{%MATCH1%%TAB%%adder1%%LE%%TAB%}~
 			SET found = 1
 		END
 		~%tempstr%~
+
+	// If not found, make the whole text box clickable
+	ACTION_IF NOT %found% THEN
+	BEGIN
+		COPY - ~.../CounterInLine~ ~.../CounterInLine~
+			REPLACE_EVALUATE CASE_INSENSITIVE ~action%MWHITE%%MDQUOTE%\(%MNOTDQUOTE%*OnDialogReplyClick%MNOTDQUOTE%*\)%MDQUOTE%~ 
+			BEGIN
+				SPRINT tempstr ~action%LE%%TAB%%TAB%"%LE%%TAB%%TAB%%TAB%%adder2%%MATCH1%"~
+				SET found = 1
+			END
+			~%tempstr%~
+	END
 
 	// Not found - give up
 	ACTION_IF NOT %found% THEN
