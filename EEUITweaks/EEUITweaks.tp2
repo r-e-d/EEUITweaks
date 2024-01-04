@@ -27,7 +27,7 @@ ALWAYS
 	END
 END
 
-VERSION ~4.0.4~
+VERSION ~4.0.5~
 
 LANGUAGE 
 	~English~ ~EEUITweaks/languages/english~ ~EEUITweaks/languages/english/setup.tra~

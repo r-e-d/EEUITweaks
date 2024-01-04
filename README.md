@@ -1,4 +1,4 @@
-# EEUITweaks User Interface Mods Collection Version 4.0.4
+# EEUITweaks User Interface Mods Collection Version 4.0.5
 
 The goal of EEUITweaks is to be a collection of the individual UI.MENU (i.e. Extended Edition 2.x+) mods/patches/tweaks from the BeamDog UI Modding forum; packaged as a single WeiDU collection. The advantages are to automate the tedious manual editing of UI.MENU, simplify multiple mod installations (particularly after an update), and to provide a single source from which many EE GUI mods can be accessed. It does NOT install the full UI replacement environments, although it does support modding them.
 
