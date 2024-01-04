@@ -108,12 +108,12 @@ BEGIN
 	LOG ~Patching buildQuestDisplay function~
 	ACTION_MATCH 1
 	WITH
-		%IsBG2% %IsTIWDonBG2% %IsTIWD2onBG2% %IsBGEE% %IsEETBG2% %IsEETSoD%
+		%IsBG2% %IsTIWDonBG2% %IsTIWD2onBG2% %IsBGEE% %IsSoD% %IsEETBG2% %IsEETSoD%
 		BEGIN
-			OUTER_SPRINT $UIMenuIF("LuaRegex") ~^[%TAB% ]*if[%TAB% ]*([%TAB% ]*objective\.text[%TAB% ]*==[%TAB% ]*Infinity_FetchString[%TAB% ]*([%TAB% ]*quest\.text[%TAB% ]*)[%TAB% ]*)[%TAB% ]*then.*$~
+			OUTER_SPRINT $UIMenuIF("LuaRegex") ~^[%TAB% ]*if[%TAB% ]*([%TAB% ]*objective\.text[%TAB% ]*==[%TAB% ]*Infinity_FetchString[%TAB% ]*([%TAB% ]*quest\.text[%TAB% ]*).*)[%TAB% ]*then.*$~
 			OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/lua/lefreutSimpleJournalFixes/buildQuestDisplayPatch1.lua~
 		END
-		%IsSoD% %IsBG2onSoD% %IsTIWDonSoD% %IsKRDS% %IsKRDS0% %IsKRDS1% %IsKRDS2% %IsKRDS3% %IsKRDS4% %IsKRDS5%
+		%IsBG2onSoD% %IsTIWDonSoD% %IsKRDS% %IsKRDS0% %IsKRDS1% %IsKRDS2% %IsKRDS3% %IsKRDS4% %IsKRDS5%
 		BEGIN
 			OUTER_SPRINT $UIMenuIF("LuaRegex") "^[%TAB% ]*if[%TAB% ]*([%TAB% ]*objective\.stateType[%TAB% ]*~=[%TAB% ]*const\.ENTRY_TYPE_INFO[%TAB% ]*)[%TAB% ]*then"
 			OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/lua/lefreutSimpleJournalFixes/buildQuestDisplayPatch2.lua~
@@ -135,109 +135,115 @@ BEGIN
 	END
 END
 
-// Fix for empty entries
-LOG ~Patching questEnabled function~
-ACTION_MATCH 1
-WITH
-	%IsBG2% %IsTIWDonBG2% %IsTIWD2onBG2% %IsBGEE% %IsSoD% %IsBG2onSoD% %IsSoDOverhaul% %IsTIWDonSoD% %IsKRDS% %IsKRDS0% %IsKRDS1% %IsKRDS2% %IsKRDS3% %IsKRDS4% %IsKRDS5% %IsEETBG2% %IsEETSoD%
-	BEGIN
-		OUTER_SPRINT $UIMenuIF("LuaRegex") ~return[%TAB% ]*([%TAB% ]*questDisplay\[row\][%TAB% ]+and[%TAB% ]+questDisplay\[row\]\.quest[%TAB% ]+and[%TAB% ]+containsChapter[%TAB% ]*([%TAB% ]*questDisplay\[row\]\.chapters[%TAB% ]*,[%TAB% ]*chapter[%TAB% ]*)[%TAB% ]+and[%TAB% ]+([%TAB% ]*#questDisplay\[row\]\.children[%TAB% ]+>[%TAB% ]+0[%TAB% ]*)[%TAB% ]*)~
-		OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/lua/lefreutSimpleJournalFixes/questEnabledPatch1.lua~
+ACTION_IF (NOT(%IsBGEE% = 1) AND NOT(%IsSoD% = 1)) THEN // Not needed for BG or SoD
+BEGIN
+	// Fix for empty entries
+	LOG ~Patching questEnabled function~
+	ACTION_MATCH 1
+	WITH
+		%IsBG2% %IsTIWDonBG2% %IsTIWD2onBG2% %IsBG2onSoD% %IsSoDOverhaul% %IsTIWDonSoD% %IsKRDS% %IsKRDS0% %IsKRDS1% %IsKRDS2% %IsKRDS3% %IsKRDS4% %IsKRDS5% %IsEETBG2% %IsEETSoD%
+		BEGIN
+			OUTER_SPRINT $UIMenuIF("LuaRegex") ~return[%TAB% ]*([%TAB% ]*questDisplay\[row\][%TAB% ]+and[%TAB% ]+questDisplay\[row\]\.quest[%TAB% ]+and[%TAB% ]+containsChapter[%TAB% ]*([%TAB% ]*questDisplay\[row\]\.chapters[%TAB% ]*,[%TAB% ]*chapter[%TAB% ]*)[%TAB% ]+and[%TAB% ]+([%TAB% ]*#questDisplay\[row\]\.children[%TAB% ]+>[%TAB% ]+0[%TAB% ]*)[%TAB% ]*)~
+			OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/lua/lefreutSimpleJournalFixes/questEnabledPatch1.lua~
+		END
+
+		DEFAULT
+			FAIL @15
 	END
 
-	DEFAULT
-		FAIL @15
-END
-
-LAUNCH_ACTION_MACRO lefreutSimpleJournalFixes.PatchBody
-ACTION_IF NOT $UIMenuIF("Succeeded") THEN
-BEGIN
-	FAIL @307004
-END
-LAUNCH_ACTION_MACRO UIMenuUpdateLuaBlock
-ACTION_IF NOT $UIMenuIF("Succeeded") THEN
-BEGIN
-	FAIL @103
-END
-
-LOG ~Adding childrenContainsChapter function~
-ACTION_MATCH 1
-WITH
-	%IsBG2% %IsTIWDonBG2% %IsTIWD2onBG2% %IsBGEE% %IsSoD% %IsBG2onSoD% %IsSoDOverhaul% %IsTIWDonSoD% %IsKRDS% %IsKRDS0% %IsKRDS1% %IsKRDS2% %IsKRDS3% %IsKRDS4% %IsKRDS5% %IsEETBG2% %IsEETSoD%
+	LAUNCH_ACTION_MACRO lefreutSimpleJournalFixes.PatchBody
+	ACTION_IF NOT $UIMenuIF("Succeeded") THEN
 	BEGIN
-		OUTER_SPRINT $UIMenuIF("LuaRegex") ~^[%TAB% ]*function[%TAB% ]+questEnabled[%TAB% ]*([%TAB% ]*row[%TAB% ]*)~
-		OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/lua/lefreutSimpleJournalFixes/questEnabledPatch2.lua~
+		FAIL @307004
+	END
+	LAUNCH_ACTION_MACRO UIMenuUpdateLuaBlock
+	ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+	BEGIN
+		FAIL @103
 	END
 
-	DEFAULT
-		FAIL @15
-END
+	LOG ~Adding childrenContainsChapter function~
+	ACTION_MATCH 1
+	WITH
+		%IsBG2% %IsTIWDonBG2% %IsTIWD2onBG2% %IsBGEE% %IsBG2onSoD% %IsSoDOverhaul% %IsTIWDonSoD% %IsKRDS% %IsKRDS0% %IsKRDS1% %IsKRDS2% %IsKRDS3% %IsKRDS4% %IsKRDS5% %IsEETBG2% %IsEETSoD%
+		BEGIN
+			OUTER_SPRINT $UIMenuIF("LuaRegex") ~^[%TAB% ]*function[%TAB% ]+questEnabled[%TAB% ]*([%TAB% ]*row[%TAB% ]*)~
+			OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/lua/lefreutSimpleJournalFixes/questEnabledPatch2.lua~
+		END
 
-LAUNCH_ACTION_MACRO lefreutSimpleJournalFixes.PatchBody
-ACTION_IF NOT $UIMenuIF("Succeeded") THEN
-BEGIN
-	FAIL @307004
-END
-LAUNCH_ACTION_MACRO UIMenuUpdateLuaBlock
-ACTION_IF NOT $UIMenuIF("Succeeded") THEN
-BEGIN
-	FAIL @103
-END
-
-// Patch textflash menu - Fix for journal popup
-LOG ~Patching textflash menu~
-SILENT
-OUTER_SPRINT $UIMenuIF("MenuName") ~textflash~
-OUTER_SPRINT $UIMenuIF("Body") ~~
-LAUNCH_ACTION_MACRO UIMenuGetMenu
-
-ACTION_IF NOT $UIMenuIF("Succeeded") THEN
-BEGIN
-	FAIL @144
-END
-
-LOG ~First label to text patch~
-ACTION_MATCH 1
-WITH
-	%IsBG2% %IsTIWDonBG2% %IsTIWD2onBG2% %IsBGEE% %IsSoD% %IsBG2onSoD% %IsSoDOverhaul% %IsTIWDonSoD% %IsKRDS% %IsKRDS0% %IsKRDS1% %IsKRDS2% %IsKRDS3% %IsKRDS4% %IsKRDS5% %IsEETBG2% %IsEETSoD%
-	BEGIN
-		OUTER_SPRINT $UIMenuIF("LuaRegex") ~^[%TAB% ]*label%MNOBRACE%*{%MNOBRACE%*area[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+%MNOBRACE%+"getSubtitleString[%TAB% ]*([%TAB% ]*)"%MNOBRACE%+}.*$~
-		OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/lefreutSimpleJournalFixes/textflashMenuPatch1.menu~
+		DEFAULT
+			FAIL @15
 	END
 
-	DEFAULT
-		FAIL @15
-END
-
-LAUNCH_ACTION_MACRO lefreutSimpleJournalFixes.PatchBody
-ACTION_IF NOT $UIMenuIF("Succeeded") THEN
-BEGIN
-	FAIL @145
-END
-
-LOG ~Second label to text patch~
-ACTION_MATCH 1
-WITH
-	%IsBG2% %IsTIWDonBG2% %IsTIWD2onBG2% %IsBGEE% %IsSoD% %IsBG2onSoD% %IsSoDOverhaul% %IsTIWDonSoD% %IsKRDS% %IsKRDS0% %IsKRDS1% %IsKRDS2% %IsKRDS3% %IsKRDS4% %IsKRDS5% %IsEETBG2% %IsEETSoD%
+	LAUNCH_ACTION_MACRO lefreutSimpleJournalFixes.PatchBody
+	ACTION_IF NOT $UIMenuIF("Succeeded") THEN
 	BEGIN
-		OUTER_SPRINT $UIMenuIF("LuaRegex") ~^[%TAB% ]*label%MNOBRACE%*{%MNOBRACE%*area[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+%MNOBRACE%+"getBodyString[%TAB% ]*([%TAB% ]*)"%MNOBRACE%+}.*$~
-		OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/lefreutSimpleJournalFixes/textflashMenuPatch2.menu~
+		FAIL @307004
+	END
+	LAUNCH_ACTION_MACRO UIMenuUpdateLuaBlock
+	ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+	BEGIN
+		FAIL @103
+	END
+END
+
+ACTION_IF (NOT(%IsBGEE% = 1) AND NOT(%IsBG2% = 1)) THEN // Not needed for BG or BG2
+BEGIN
+	// Patch textflash menu - Fix for journal popup
+	LOG ~Patching textflash menu~
+	SILENT
+	OUTER_SPRINT $UIMenuIF("MenuName") ~textflash~
+	OUTER_SPRINT $UIMenuIF("Body") ~~
+	LAUNCH_ACTION_MACRO UIMenuGetMenu
+
+	ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+	BEGIN
+		FAIL @144
 	END
 
-	DEFAULT
-		FAIL @15
-END
+	LOG ~First label to text patch~
+	ACTION_MATCH 1
+	WITH
+		%IsTIWDonBG2% %IsTIWD2onBG2% %IsSoD% %IsBG2onSoD% %IsSoDOverhaul% %IsTIWDonSoD% %IsKRDS% %IsKRDS0% %IsKRDS1% %IsKRDS2% %IsKRDS3% %IsKRDS4% %IsKRDS5% %IsEETBG2% %IsEETSoD%
+		BEGIN
+			OUTER_SPRINT $UIMenuIF("LuaRegex") ~^[%TAB% ]*label%MNOBRACE%*{%MNOBRACE%*area[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+%MNOBRACE%+"getSubtitleString[%TAB% ]*([%TAB% ]*)"%MNOBRACE%+}.*$~
+			OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/lefreutSimpleJournalFixes/textflashMenuPatch1.menu~
+		END
 
-LAUNCH_ACTION_MACRO lefreutSimpleJournalFixes.PatchBody
-ACTION_IF NOT $UIMenuIF("Succeeded") THEN
-BEGIN
-	FAIL @145
-END
+		DEFAULT
+			FAIL @15
+	END
 
-LAUNCH_ACTION_MACRO UIMenuUpdateMenu
-ACTION_IF NOT $UIMenuIF("Succeeded") THEN
-BEGIN
-	FAIL @103
+	LAUNCH_ACTION_MACRO lefreutSimpleJournalFixes.PatchBody
+	ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+	BEGIN
+		FAIL @145
+	END
+
+	LOG ~Second label to text patch~
+	ACTION_MATCH 1
+	WITH
+		%IsBG2% %IsTIWDonBG2% %IsTIWD2onBG2% %IsBGEE% %IsSoD% %IsBG2onSoD% %IsSoDOverhaul% %IsTIWDonSoD% %IsKRDS% %IsKRDS0% %IsKRDS1% %IsKRDS2% %IsKRDS3% %IsKRDS4% %IsKRDS5% %IsEETBG2% %IsEETSoD%
+		BEGIN
+			OUTER_SPRINT $UIMenuIF("LuaRegex") ~^[%TAB% ]*label%MNOBRACE%*{%MNOBRACE%*area[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+[%TAB% ]+[0-9]+%MNOBRACE%+"getBodyString[%TAB% ]*([%TAB% ]*)"%MNOBRACE%+}.*$~
+			OUTER_SPRINT $UIMenuIF("Filespec") ~%PKGNAME%/menu/lefreutSimpleJournalFixes/textflashMenuPatch2.menu~
+		END
+
+		DEFAULT
+			FAIL @15
+	END
+
+	LAUNCH_ACTION_MACRO lefreutSimpleJournalFixes.PatchBody
+	ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+	BEGIN
+		FAIL @145
+	END
+
+	LAUNCH_ACTION_MACRO UIMenuUpdateMenu
+	ACTION_IF NOT $UIMenuIF("Succeeded") THEN
+	BEGIN
+		FAIL @103
+	END
 END
 
 // Close UI.MENU
