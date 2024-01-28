@@ -1,7 +1,7 @@
 /*******************************************************************************
  * ChargenRacePatch1
  *
- * Adds '; chargen.selectedRace = chargen.races[ currentChargenRace ].id' 
+ * Adds '; chargen.selectedRace = chargen.races[ currentChargenRace ].id'
  * to DONE_BUTTON action
  * 
  * Results in $UIMenuIF("Succeeded") 1 => Success, 0 => Failure
@@ -21,14 +21,13 @@ BEGIN
 
 	// Find target, insert code
 	COPY - ~.../CounterInLine~ ~.../CounterInLine~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(^[%TAB% ]*button%MWHITE%{%MNOBRACE%+text[%TAB% ]*%MQUOTE%DONE_BUTTON%MQUOTE%%MNOBRACE%+action%MWHITE%%MDQUOTE%%MNOTDQUOTE%+\)\(%MDQUOTE%%MWHITE%}.*%MEOL%\)~
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\(createCharScreen:OnDoneButtonClick()\)~
 		BEGIN
-			SPRINT tempstr ~%MATCH1%%adder%%MATCH2%~
+			SPRINT tempstr ~%MATCH1%%adder%~
 			SET found = 1
 		END
 		~%tempstr%~
 
-		PATCH_LOG ~Match1 = "%v1%", Match2 = "%v2%"~
 	// Not found, fail
 	ACTION_IF NOT %found% THEN
 	BEGIN
@@ -51,7 +50,7 @@ END
 /*******************************************************************************
  * ChargenClassPatch1
  *
- * Adds 'chargen.selectedClass = chargen.class[ currentChargenClass ].id' 
+ * Adds '; chargen.selectedClass = chargen.class[ currentChargenClass ].id'
  * to DONE_BUTTON action
  * 
  * Results in $UIMenuIF("Succeeded") 1 => Success, 0 => Failure
@@ -61,7 +60,7 @@ DEFINE_ACTION_MACRO FaydarkAutoRoll.ChargenClassPatch1
 BEGIN
 	LOCAL_SPRINT tempstr $UIMenuIF("Body")
 	LOCAL_SET found = 0
-	LOCAL_SPRINT adder "chargen.selectedClass = chargen.class[ currentChargenClass ].id"
+	LOCAL_SPRINT adder "; chargen.selectedClass = chargen.class[ currentChargenClass ].id"
 
 	// Put current menu definition into inline file
 	COPY - ~ToInlineTemplate~ ~.../CounterInLine~
@@ -71,9 +70,9 @@ BEGIN
 
 	// Find target, insert code
 	COPY - ~.../CounterInLine~ ~.../CounterInLine~
-		REPLACE_EVALUATE CASE_INSENSITIVE ~\(^[%TAB% ]*button%MWHITE%{%MNOBRACE%+text[%TAB% ]*%MQUOTE%DONE_BUTTON%MQUOTE%%MNOBRACE%+action%MWHITE%%MDQUOTE%%MNOTDQUOTE%+\)\(%MDQUOTE%%MWHITE%}.*%MEOL%\)~
+		REPLACE_EVALUATE CASE_INSENSITIVE ~\(createCharScreen:OnDoneButtonClick()\)~
 		BEGIN
-			SPRINT tempstr ~%MATCH1%%adder%%MATCH2%~
+			SPRINT tempstr ~%MATCH1%%adder%~
 			SET found = 1
 		END
 		~%tempstr%~
