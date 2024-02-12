@@ -73,6 +73,10 @@ menu
 				needSpecialist = true
 			end
 		"
+		actionAlt
+		"
+			needSpecialist = false
+		"
 	}
 	label
 	{
@@ -80,6 +84,15 @@ menu
 		text lua "t('SPELLS_REMAINING_NORMAL') .. ': ' .. chargen.extraSpells"
 		text style "normal"
 		text align center center
+	}
+	label
+	{
+		area 436 128 382 478
+		enabled "shouldShowSpecialistMessage()"
+		text lua "t('SPECIALIST_SPELL_REQ')"
+		text style "normal"
+		text align center center
+		rectangle 0
 	}
 
 	text

@@ -37,6 +37,10 @@ function nextOrDone()
 	end
 end
 
+function shouldShowSpecialistMessage()
+	return false
+end
+
 function autopickSpells()
 	local spells = {table.unpack(chargen.choose_spell)}
 	local rnd = {}

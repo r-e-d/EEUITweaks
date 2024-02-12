@@ -152,12 +152,11 @@ end
 
 function setMageBookLevel(num, noSound)
 	currentBookSpell = 0
-	currentSpellLevel = num
-	if noSound ~= true then
+	if noSound ~= true and num ~= currentSpellLevel then
 		Infinity_PlaySound('GAM_05')
 	end
+	currentSpellLevel = num
 	mageScreen:SetSpellLevel(num - 1)
-	selectedSpell = nil
 	refreshMageBook()
 end
 

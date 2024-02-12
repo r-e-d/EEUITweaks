@@ -207,14 +207,13 @@ menu
 		var currentBookSpell
 		action
 		"
-			local idx = 4 * (currentBookSpell - 1) + cellNumber
-			if characters[id].priestSpells[currentSpellLevel][idx] and #bottomSpells < #bottomSpellsPlaceHolder then
-				createPriestMemorizationSparkle(62 * (cellNumber - 1), 0, 62, 62, 'bookListPriest', currentBookSpell)
+			currentBookSpell = 4 * (currentBookSpell - 1) + cellNumber
+			if characters[id].priestSpells[currentSpellLevel][currentBookSpell] and #bottomSpells < #bottomSpellsPlaceHolder then
+				createPriestMemorizationSparkle(62 * (cellNumber - 1), 0, 62, 62, 'bookListPriest', -1)
 				Infinity_PlaySound('GAM_24')
 				showPriestMemorizationFlash = true
-				priestScreen:MemorizeSpell(characters[id].priestSpells[currentSpellLevel][idx].level, characters[id].priestSpells[currentSpellLevel][idx].index)
+				priestScreen:MemorizeSpell(characters[id].priestSpells[currentSpellLevel][currentBookSpell].level, characters[id].priestSpells[currentSpellLevel][currentBookSpell].index)
 			end
-			selectedSpell = nil
 		"
 		actionAlt
 		"

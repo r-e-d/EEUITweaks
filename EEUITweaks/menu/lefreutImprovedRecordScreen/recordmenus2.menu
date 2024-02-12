@@ -1,17 +1,104 @@
 `
 -- Override
 function updateAttrTable()
-	if (characters[currentID] ~= nil) then
-		attributeItems = {
-			{ characters[currentID].attr.str, 9582 },
-			{ characters[currentID].attr.dex, 9584 },
-			{ characters[currentID].attr.con, 9583 },
-			{ characters[currentID].attr.int, 9585 },
-			{ characters[currentID].attr.wis, 9586 },
-			{ characters[currentID].attr.cha, 9587 }
-		}
-		buildRecordStats()
-		buildRecordInfos()
+	if (characters[currentID] == nil) then return end
+
+	attributeItems = {
+		{ characters[currentID].attr.str, 9582 },
+		{ characters[currentID].attr.dex, 9584 },
+		{ characters[currentID].attr.con, 9583 },
+		{ characters[currentID].attr.int, 9585 },
+		{ characters[currentID].attr.wis, 9586 },
+		{ characters[currentID].attr.cha, 9587 }
+	}
+
+	recordStats = {}
+
+	table.insert(recordStats, {1,t("ABILITIES_TITLE")})
+	for i=1,6 do
+		table.insert(recordStats, {2,Infinity_FetchString(attributeItems[i][1].strRef),displayAttr(i)})
+	end
+
+	table.insert(recordStats, {1,t("COMBAT_STATS_LABEL")})
+	table.insert(recordStats, {2,t("ARMOR_CLASS_LABEL"),characters[currentID].AC.current})
+	table.insert(recordStats, {2,t("HIT_POINTS_LABEL"),characters[currentID].HP.current .. ' / ' .. characters[currentID].HP.max})
+	table.insert(recordStats, {2,t("THAC0_LABEL"),characters[currentID].THAC0.current})
+	if characters[currentID].THAC0.offhand then
+		table.insert(recordStats, {2,t("OFF_HAND_THAC0"),characters[currentID].THAC0.offhand})
+	else
+		table.insert(recordStats, {2,t("OFF_HAND_THAC0"),'-'})
+	end
+	table.insert(recordStats, {2,t("DAMAGE_LABEL"),characters[currentID].damage.min .. ' - ' .. characters[currentID].damage.max})
+	if characters[currentID].damage.minOffhand and characters[currentID].damage.maxOffhand then
+		table.insert(recordStats, {2,t("OFF_HAND_DAMAGE"),characters[currentID].damage.minOffhand .. ' - ' .. characters[currentID].damage.maxOffhand})
+	else
+		table.insert(recordStats, {2,t("OFF_HAND_DAMAGE"),'-'})
+	end
+	table.insert(recordStats, {2,t("NUM_ATTACKS_LABEL"),characters[currentID].proficiencies.numAttacks.current})
+
+	table.insert(recordStats, {1,t("SAVING_THROWS_LABEL")})
+	for s in (characters[currentID].proficiencies.savingThrows.."\n"):gmatch("(.-)\n") do
+		local pos = s:find(":", 1)
+		table.insert(recordStats, {2,s:sub(1, pos - 1),s:sub(pos + 2)})
+	end
+
+	recordInfos = {}
+
+	if characters[currentID].classlevel.second then
+		local strRef = characters[currentID].classlevel.second.active and 19721 or 19722
+		table.insert(recordInfos, {1,Infinity_FetchString(strRef)})
+		table.insert(recordInfos, {1,""})
+	end
+	getClassString()
+	if not isEmpty(characters[currentID].statusEffects) then
+		table.insert(recordInfos, {1,""})
+		for k, v in pairs(characters[currentID].statusEffects) do
+			table.insert(recordInfos, {2,v})
+		end
+	end
+
+	table.insert(recordInfos, {1,""})
+	table.insert(recordInfos, {1,t("PROFICIENCIES_LABEL")})
+	local lore = Infinity_FetchString(characters[currentID].proficiencies.lore.strRef) .. ": " ..  characters[currentID].proficiencies.lore.current
+	table.insert(recordInfos, {1,lore})
+	local reputation = Infinity_FetchString(characters[currentID].proficiencies.reputation.strRef) .. ": " ..  characters[currentID].proficiencies.reputation.current
+	table.insert(recordInfos, {1,reputation})
+	local script = t("CURRENT_SCRIPT_LABEL") .. ": " ..  characters[currentID].proficiencies.currentScript
+	table.insert(recordInfos, {1,script})
+
+	if not isEmpty(characters[currentID].proficiencies.class_skills) then
+		table.insert(recordInfos, {1,""})
+		table.insert(recordInfos, {1,t("SKILLS_LABEL")})
+		for k, v in ipairs(characters[currentID].proficiencies.class_skills) do
+			local skills = Infinity_FetchString(v.strRef) .. ": " .. v.current
+			table.insert(recordInfos, {1,skills})
+		end
+	end
+
+	table.insert(recordInfos, {1,""})
+	table.insert(recordInfos, {1,t("FIGHTING_STYLES_LABEL")})
+	table.insert(recordInfos, {1,characters[currentID].proficiencies.weapons.current})
+	if characters[currentID].proficiencies.fightingstyles.current ~= "" then
+		table.insert(recordInfos, {1,characters[currentID].proficiencies.fightingstyles.current})
+	end
+
+	table.insert(recordInfos, {1,""})
+	table.insert(recordInfos, {1,Infinity_FetchString(10315)})
+	for k, v in ipairs(characters[currentID].proficiencies.ability) do
+		table.insert(recordInfos, {1,v.current})
+	end
+
+	table.insert(recordInfos, {1,""})
+	table.insert(recordInfos, {1,t("RESISTANCES_LABEL")})
+	table.insert(recordInfos, {1,characters[currentID].proficiencies.resistances})
+
+	if characters[currentID].proficiencies.weaponStyleBonus then
+		local weaponStyleBonus = trim(characters[currentID].proficiencies.weaponStyleBonus)
+		if weaponStyleBonus ~= "" then
+			table.insert(recordInfos, {1,""})
+			table.insert(recordInfos, {1,t("WEAPON_STYLE_BONUS_LABEL")})
+			table.insert(recordInfos, {1,weaponStyleBonus})
+		end
 	end
 end
 
@@ -55,51 +142,13 @@ function CurrentlyInGame()
 	return characterScreen:IsInGame()
 end
 
-function buildRecordStats()
-	recordStats = {}
-
-	table.insert(recordStats, {1,t("ABILITIES_TITLE")})
-	for i=1,6 do
-		table.insert(recordStats, {2,Infinity_FetchString(attributeItems[i][1].strRef),displayAttr(i)})
-	end
-
-	table.insert(recordStats, {1,t("COMBAT_STATS_LABEL")})
-	table.insert(recordStats, {2,t("ARMOR_CLASS_LABEL"),characters[currentID].AC.current})
-	table.insert(recordStats, {2,t("HIT_POINTS_LABEL"),characters[currentID].HP.current .. ' / ' .. characters[currentID].HP.max})
-	table.insert(recordStats, {2,t("THAC0_LABEL"),characters[currentID].THAC0.current})
-	if characters[currentID].THAC0.offhand then
-		table.insert(recordStats, {2,t("OFF_HAND_THAC0"),characters[currentID].THAC0.offhand})
-	else
-		table.insert(recordStats, {2,t("OFF_HAND_THAC0"),'-'})
-	end
-	table.insert(recordStats, {2,t("DAMAGE_LABEL"),characters[currentID].damage.min .. ' - ' .. characters[currentID].damage.max})
-	if characters[currentID].damage.minOffhand and characters[currentID].damage.maxOffhand then
-		table.insert(recordStats, {2,t("OFF_HAND_DAMAGE"),characters[currentID].damage.minOffhand .. ' - ' .. characters[currentID].damage.maxOffhand})
-	else
-		table.insert(recordStats, {2,t("OFF_HAND_DAMAGE"),'-'})
-	end
-	table.insert(recordStats, {2,t("NUM_ATTACKS_LABEL"),characters[currentID].proficiencies.numAttacks.current})
-
-	table.insert(recordStats, {1,t("SAVING_THROWS_LABEL")})
-	for s in (characters[currentID].proficiencies.savingThrows.."\n"):gmatch("(.-)\n") do
-		local pos = s:find(":", 1)
-		table.insert(recordStats, {2,s:sub(1, pos - 1),s:sub(pos + 2)})
-	end
-end
-function empty(t)
+function isEmpty(t)
 	if next(t) == nil then
 		return true
 	end
 	return false
 end
-function buildRecordInfos()
-	recordInfos = {}
-
-	if characters[currentID].classlevel.second then
-		local strRef = characters[currentID].classlevel.second.active and 19721 or 19722
-		table.insert(recordInfos, {1,Infinity_FetchString(strRef)})
-		table.insert(recordInfos, {1,""})
-	end
+function getClassString()
 	table.insert(recordInfos, {1,characters[currentID].classlevel.first.details})
 	if characters[currentID].classlevel.second then
 		table.insert(recordInfos, {1,""})
@@ -109,57 +158,12 @@ function buildRecordInfos()
 		table.insert(recordInfos, {1,""})
 		table.insert(recordInfos, {1,characters[currentID].classlevel.third.details})
 	end
-
-	if not empty(characters[currentID].statusEffects) then
-		table.insert(recordInfos, {1,""})
-		for k, v in pairs(characters[currentID].statusEffects) do
-			table.insert(recordInfos, {2,v})
-		end
+end
+function getStatusString(strRef)
+	if type(dwAddCharacterIcon2) == 'function' then
+		strRef = dwAddCharacterIcon2(strRef)
 	end
-
-	table.insert(recordInfos, {1,""})
-	table.insert(recordInfos, {1,t("PROFICIENCIES_LABEL")})
-	local lore = Infinity_FetchString(characters[currentID].proficiencies.lore.strRef) .. ": " ..  characters[currentID].proficiencies.lore.current
-	table.insert(recordInfos, {1,lore})
-	local reputation = Infinity_FetchString(characters[currentID].proficiencies.reputation.strRef) .. ": " ..  characters[currentID].proficiencies.reputation.current
-	table.insert(recordInfos, {1,reputation})
-	local script = t("CURRENT_SCRIPT_LABEL") .. ": " ..  characters[currentID].proficiencies.currentScript
-	table.insert(recordInfos, {1,script})
-
-	if not empty(characters[currentID].proficiencies.class_skills) then
-		table.insert(recordInfos, {1,""})
-		table.insert(recordInfos, {1,t("SKILLS_LABEL")})
-		for k, v in ipairs(characters[currentID].proficiencies.class_skills) do
-			local skills = Infinity_FetchString(v.strRef) .. ": " .. v.current
-			table.insert(recordInfos, {1,skills})
-		end
-	end
-
-	table.insert(recordInfos, {1,""})
-	table.insert(recordInfos, {1,t("FIGHTING_STYLES_LABEL")})
-	table.insert(recordInfos, {1,characters[currentID].proficiencies.weapons.current})
-	if characters[currentID].proficiencies.fightingstyles.current ~= "" then
-		table.insert(recordInfos, {1,characters[currentID].proficiencies.fightingstyles.current})
-	end
-
-	table.insert(recordInfos, {1,""})
-	table.insert(recordInfos, {1,Infinity_FetchString(10315)})
-	for k, v in ipairs(characters[currentID].proficiencies.ability) do
-		table.insert(recordInfos, {1,v.current})
-	end
-
-	table.insert(recordInfos, {1,""})
-	table.insert(recordInfos, {1,t("RESISTANCES_LABEL")})
-	table.insert(recordInfos, {1,characters[currentID].proficiencies.resistances})
-
-	if characters[currentID].proficiencies.weaponStyleBonus then
-		local weaponStyleBonus = trim(characters[currentID].proficiencies.weaponStyleBonus)
-		if weaponStyleBonus ~= "" then
-			table.insert(recordInfos, {1,""})
-			table.insert(recordInfos, {1,t("WEAPON_STYLE_BONUS_LABEL")})
-			table.insert(recordInfos, {1,weaponStyleBonus})
-		end
-	end
+	return Infinity_FetchString(strRef)
 end
 `
 menu
@@ -271,7 +275,8 @@ menu
 			label
 			{
 				area		22 0 -1 -1
-				text		lua "Infinity_FetchString(recordInfos[rowNumber][2].strRef)"
+				enabled		"recordInfos[rowNumber][1] == 2"
+				text		lua "getStatusString(recordInfos[rowNumber][2].strRef)"
 				text style  'parchment'
 				text align	left center
 				text color D

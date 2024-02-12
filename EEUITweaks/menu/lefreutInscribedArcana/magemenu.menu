@@ -225,14 +225,13 @@ menu
 		var currentBookSpell
 		action
 		"
-			local idx = 4 * (currentBookSpell - 1) + cellNumber
-			if bookSpells[idx] and #bottomSpells < #bottomSpellsPlaceHolder then
-				createMageMemorizationSparkle(62 * (cellNumber - 1), 0, 62, 62, 'bookListMage', currentBookSpell)
+			currentBookSpell = 4 * (currentBookSpell - 1) + cellNumber
+			if bookSpells[currentBookSpell] and #bottomSpells < #bottomSpellsPlaceHolder then
+				createMageMemorizationSparkle(62 * (cellNumber - 1), 0, 62, 62, 'bookListMage', -1)
 				Infinity_PlaySound('GAM_24')
 				showMageMemorizationFlash = true
-				mageScreen:MemorizeSpell(bookSpells[idx].level, bookSpells[idx].index)
+				mageScreen:MemorizeSpell(bookSpells[currentBookSpell].level, bookSpells[currentBookSpell].index)
 			end
-			selectedSpell = nil
 		"
 		actionAlt
 		"
