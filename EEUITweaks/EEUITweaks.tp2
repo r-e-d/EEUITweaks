@@ -777,6 +777,25 @@ WITH
 		ACTION_RERAISE
 END
 
+/******************************************************************************
+ * Replace the dragon button in the official SoD interface
+ *****************************************************************************/
+BEGIN @214000 DESIGNATED 2140
+GROUP @2
+REQUIRE_PREDICATE (
+	(FILE_EXISTS_IN_GAME ~UI.MENU~) AND // IE 2.0+
+	(GAME_IS ~bgee~) AND
+	(GAME_INCLUDES sod)
+) @27
+
+ACTION_TRY
+	INCLUDE ~%PKGNAME%/include/ReplaceDragon.tpa~
+WITH 
+	DEFAULT
+		LAM UIMenuAbort
+		ACTION_RERAISE
+END
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // Record/Inventory/Journal Group
